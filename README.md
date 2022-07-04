@@ -105,13 +105,13 @@ The dependency diagram of these components can be seen below:
 
 Before the service declares readiness, it loads all the polygons from [osm](https://openstreetmap.org).<br>
 When this component is called, it iterates through all polygons one by one and checks if the given point is inside it or not using [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm). <br>
-When it finds a polygon, it returns the ID and when id doesn't it simply returns an error.
+When it finds a polygon, it returns the ID and when it doesn't it simply returns an error.
 
 <br>
 
 **What happens if our business needs dynamic polygons?**
 
-The component can update its polygons in a regular interval from a single datasource.<br>
+This component can update its polygons in regular intervals from a single datasource.<br>
 This way if you update that data source it will take effect after a delay. <br>
 But since these kinds of update hardly ever happen, we can simply restart our service when a polygon update is pushed. <br>
 
@@ -120,7 +120,7 @@ But since these kinds of update hardly ever happen, we can simply restart our se
 **Scaling Up**
 
 The above algorithm to find the polygon of a point is done with order complexity of _O(N x V)_. <br>
-In which _N_ is the total number of polygons, and _V_ is the average number of vertices in polygons. <br>
+In which _N_ is the total number of polygons, and _V_ is the average number of vertices in each polygon. <br>
 So when we move on to deploy this surge feature in the whole country we'll have about 100 cities. <br>
 Each city containing on average 10 polygons and each polygon containing on average 35 sides, <br>
 will leave us with a problem space of 35000 records. Let's say on average we will search only 17500 records. <br>
@@ -130,12 +130,12 @@ So how do we scale it up?
 - we can reorder the polygons in such order that the most popular polygons are seen sooner than the less popular ones.
 - we can build an index from all the polygons. how?
   - first use a grid system (e.g. [h3](https://eng.uber.com/h3/)) with a reasonable resolution to partition our coverage area into smaller grid cells.
-  - then for each grid cell, we'll store the polygon IDs that cover that cell completely and partially in separate lists.
-  - so when a (lat,lng) pair comes up, we'll first find its grid cell id in _O(1)_
-  - then we'll get all the corresponding polygons
-  - we can return the polygons that completely cover the grid instantly
-  - but for the polygons that only cover partially, we'll have to use ray casting again.
-  - this index will provide us with _O(1)_ queries in best case.
+  - then for each grid cell in our area, we'll store the polygon IDs that cover that cell completely and partially in separate lists.
+  - so when a (lat,lng) pair comes up, we'll first find its grid cell id in _O(1)_,
+  - then we'll get all the corresponding polygons,
+  - we can return the polygons that completely cover the cell instantly.
+  - but for the polygons that only cover the cell partially, we'll have to use ray casting again.
+  - this index will provide us with _O(1)_ queries in average case.
   - the memory overhead of this method can be managed through configuring the grid resolution.
 
 ---
@@ -192,7 +192,9 @@ We can have the schema below to plan ahead for the future.
         <th>
             datetime
         </th>
-        <th></th>
+        <th>
+            x
+        </th>
     </tr>
     <tr>
         <th>
@@ -209,7 +211,7 @@ We can have the schema below to plan ahead for the future.
 Keeping the consistency of this schema is a little harder, because we will have to make sure that:
 
 - no two configurations are valid in the same time.
-- we'll always have some config for any given point of time.
+- we'll always have some valid config for any given point of time.
 
 Please note that this schema will keep a complete log of our config changes too.
 
@@ -228,8 +230,40 @@ So we'll purposefully ignore it.
 
 **How does it exactly work?**
 
-On each ride request it simply inserts the observation into a data source (e.g. PostgreSQL) <br>
-Everytime the .aggregate(interval) method is called it performs a query on it's datasource and returns the results. <br>
+On each ride request it simply inserts the observation into a data source (e.g. PostgreSQL). <br>
+The data scheme would be sth like below:
+<table>
+    <tr>
+        <th>
+            column
+        </th>
+        <th>
+            type
+        </th>
+        <th>
+            nullable
+        </th>
+    </tr>
+    <tr>
+        <th>
+            polygon_id
+        </th>
+        <th>
+            uint
+        </th>
+        <th></th>
+    </tr>
+    <tr>
+        <th>
+            timestamp
+        </th>
+        <th>
+            datetime
+        </th>
+        <th></th>
+    </tr>
+</table>
+Everytime the .aggregate(interval) method is called it performs an aggregate query on it's datasource and returns the results. <br>
 
 <br>
 
