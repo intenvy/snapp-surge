@@ -266,6 +266,8 @@ The data scheme would be sth like below:
 Everytime the .aggregate(interval) method is called it performs an aggregate query on it's datasource and returns the results.
 
 <br>
+<br>
+<br>
 
 **Scaling Up Write Throughput**
 
