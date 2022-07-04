@@ -18,7 +18,7 @@
 ### Functional Requirements :
  - We should be able to aggregate the total demand for rides in a sliding time window.
  - Aggregation results must be continuously communicated with pricing service.
- - Whe surge configurations can be edited at anytime.
+ - The surge configurations can be edited at anytime.
 
 <br>
 
