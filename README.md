@@ -75,7 +75,7 @@ The dependency diagram of these components can be seen below:
 
 ### Quick Note 
 - The diagram pointers are directed in the way that two components depend on each other.
-- There is a text on each diagram briefly explaining how the dependant uses the depended.
+- There is a text on each pointer briefly explaining how the dependant uses the depended.
 - All the above components are loosely coupled therefore they can be a microservice of their own. But it really seems like a bit of over engineering to me personally :D
 - You can find a high resolution version of the diagram above [here](https://app.diagrams.net/#G1qGCHi4XYcPNzc3vsVU4nvbfhKfFR-JOs).
 
@@ -324,8 +324,9 @@ It can also be configured to have snapshots.
 
 <br>
 
-**Okay... but why not a queue?**
+**How about a queue?**
 
 Queues are okay, but when I think about it, I don't think the pricing service wants events or change logs from surge. <br>
-They only need the latest coefficients. <br>
-So we can provide a simple elegant solution by only storing the latest coefficients somewhere.
+It only needs the latest coefficients. <br>
+So we can provide a simple elegant solution by only storing the latest coefficients somewhere. <br>
+If we were to push change logs into a queue, the pricing service should've implemented a
