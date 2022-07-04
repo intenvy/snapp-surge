@@ -272,7 +272,7 @@ Everytime the .aggregate(interval) method is called it performs an aggregate que
 **Scaling Up Write Throughput**
 
 When the single inserts into db do not work, we can simply bulk insert in mini batches. <br>
-These batches must be both limited by time and size. Our average latency will increase, but we will be able to write more observations per second. 
+These batches must be limited by both time and size. This way our average latency would increase, but we will be able to write more observations per second. 
 
 <br>
 
