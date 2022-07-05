@@ -308,16 +308,29 @@ So in order to achieve near real time aggregates we can:
       - if the offset is out of range, it simply goes back to 0 again.
   - this data structure can keep a sliding window of given size by a rough estimation. but it's really simple.
   - keeping a partial sum on this array's buckets' counters will let us have reads and writes of _O(1)_
+  
+  - ![Aggregate Queries](./aggregate_queries.svg "Aggregate Queries")
+  
+  - as you can see, when an aggregate query is needed, we have the exact amount for all the buckets in between, but we estimated the front and rear bucket's counts.
+
+<br>
+
+**Benefits of the above datastructure**
+
+- it has fixed size, which means we're not going to experience memory leak. <br>
+- it can be stored in arrays (instead of linked lists for example) so there'll be no heap pollution as well :).
 
 <br>
 
 **TradeOffs of having in memory Aggregations**
 
-every ride request of a polygon needs to be observed by a single pod.
+the data structure above simply estimates the aggregation and this estimation solely depends on bucket size. if you decrease the bucket_size
+you'll have some memory overhead. it's simply a tradeoff. <br>
+it is obvious that every ride request of a polygon needs to be observed by a single pod so that it is processed within one instance of our datastructure. <br>
 this means that our service will become stateful. <br> managing and deploying stateful services is in itself a challenge but if we have already experienced it, it might be easy for the team. <br>
 We can also keep the whole data structure in a redis instance (with snapshots enabled) to be stateless again and achieve 50~80 ms latencies. <br>
 Plus we need to create the data structure from  our db before declaring readiness. <br>
-The complete sync between an in memory data structure and the db cannot be guaranteed either.
+The complete sync between an in memory data structure and the db cannot be guaranteed either. <br>
 
 ---
 
