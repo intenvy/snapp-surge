@@ -324,10 +324,11 @@ So in order to achieve near real time aggregates we can:
 
 **TradeOffs of having in memory Aggregations**
 
-the data structure above simply estimates the aggregation and this estimation solely depends on bucket size. if you decrease the bucket_size
+the data structure above estimates the aggregation and this estimation's accuracy solely depends on bucket size. if you decrease the bucket_size
 you'll have some memory overhead. it's simply a tradeoff. <br>
 it is obvious that every ride request of a polygon needs to be observed by a single pod so that it is processed within one instance of our datastructure. <br>
-this means that our service will become stateful. <br> managing and deploying stateful services is in itself a challenge but if we have already experienced it, it might be easy for the team. <br>
+this means that our service will become stateful. <br>
+managing and deploying stateful services is in itself a challenge but if we have already experienced it, it might be easy for the team. <br>
 We can also keep the whole data structure in a redis instance (with snapshots enabled) to be stateless again and achieve 50~80 ms latencies. <br>
 Plus we need to create the data structure from  our db before declaring readiness. <br>
 The complete sync between an in memory data structure and the db cannot be guaranteed either. <br>
