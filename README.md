@@ -378,5 +378,5 @@ It can also be configured to have snapshots.
 
 Queues are okay, but when I think about it, I don't think the pricing service wants events or change logs from surge. <br>
 It only needs the latest coefficients. <br>
-So we can provide a simple elegant solution by only storing the latest coefficients somewhere. <br>
-If we were to push change logs into a queue, the pricing service should've implemented a
+So we can provide a simpl solution by only storing the latest coefficients somewhere. <br>
+If we were to push change logs into a queue, the pricing service should've implemented a logic to store the latest coefficients somewhere. 
