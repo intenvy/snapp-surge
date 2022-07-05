@@ -309,7 +309,7 @@ So in order to achieve near real time aggregates we can:
   - this data structure can keep a sliding window of given size by a rough estimation. but it's really simple.
   - keeping a partial sum on this array's buckets' counters will let us have reads and writes of _O(1)_
   
-  - ![Aggregate Queries](./aggregate_queries.svg "Aggregate Queries")
+  - ![Aggregate Queries](./aggregate-queries.svg "Aggregate Queries")
   
   - as you can see, when an aggregate query is needed, we have the exact amount for all the buckets in between, but we estimated the front and rear bucket's counts.
 
