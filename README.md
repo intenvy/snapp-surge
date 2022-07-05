@@ -311,7 +311,7 @@ So in order to achieve near real time aggregates we can:
   
   - ![Aggregate Queries](./aggregate-queries.svg "Aggregate Queries")
   
-  - as you can see, when an aggregate query is needed, we have the exact amount for all the buckets in between, but we estimated the front and rear bucket's counts.
+  - as you can see, when an aggregate query is needed, we have the exact amount for all the buckets in between, but we estimate the front and rear bucket's counts.
 
 <br>
 
